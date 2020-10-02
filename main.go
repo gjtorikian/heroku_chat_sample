@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"io"
 	"log"
@@ -20,7 +19,6 @@ type ChatMessage struct {
 
 var (
 	rdb *redis.Client
-	ctx context.Context
 )
 
 var clients = make(map[*websocket.Conn]bool)
@@ -41,7 +39,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 	clients[ws] = true
 
 	// if it's zero, no messages were ever sent/saved
-	if rdb.Exists(ctx, "chat_messages").Val() != 0 {
+	if rdb.Exists("chat_messages").Val() != 0 {
 		sendPreviousMessages(ws)
 	}
 
@@ -59,7 +57,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendPreviousMessages(ws *websocket.Conn) {
-	chatMessages, err := rdb.LRange(ctx, "chat_messages", 0, -1).Result()
+	chatMessages, err := rdb.LRange("chat_messages", 0, -1).Result()
 	if err != nil {
 		panic(err)
 	}
@@ -93,7 +91,7 @@ func storeInRedis(msg ChatMessage) {
 		panic(err)
 	}
 
-	if err := rdb.RPush(ctx, "chat_messages", json).Err(); err != nil {
+	if err := rdb.RPush("chat_messages", json).Err(); err != nil {
 		panic(err)
 	}
 }
@@ -130,7 +128,6 @@ func main() {
 	rdb = redis.NewClient(&redis.Options{
 		Addr: redisURL,
 	})
-	ctx = context.TODO()
 
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/websocket", handleConnections)
