@@ -124,10 +124,11 @@ func main() {
 	port := os.Getenv("PORT")
 
 	redisURL := os.Getenv("REDIS_URL")
-
-	rdb = redis.NewClient(&redis.Options{
-		Addr: redisURL,
-	})
+	opt, err := redis.ParseURL(redisURL)
+	if err != nil {
+		panic(err)
+	}
+	rdb = redis.NewClient(opt)
 
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/websocket", handleConnections)
