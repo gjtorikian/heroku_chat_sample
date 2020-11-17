@@ -113,12 +113,9 @@ func messageClient(client *websocket.Conn, msg ChatMessage) {
 }
 
 func main() {
-	env := os.Getenv("GO_ENV")
-	if "" == env {
-		err := godotenv.Load()
-		if err != nil {
-			log.Fatal("Error loading .env file")
-		}
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
 	}
 
 	port := os.Getenv("PORT")
