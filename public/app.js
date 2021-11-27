@@ -1,12 +1,14 @@
-window.addEventListener('DOMContentLoaded', (_) => {
-  let websocket = new WebSocket("wss://" + window.location.host + "/websocket");
+window.addEventListener("DOMContentLoaded", (_) => {
+  let websocket = new WebSocket("ws://" + window.location.host + "/websocket");
   let room = document.getElementById("chat-text");
 
   websocket.addEventListener("message", function (e) {
     let data = JSON.parse(e.data);
-    let chatContent = `<p><strong>${data.username}</strong>: ${data.text}</p>`;
+    // creating html element
+    let p = document.createElement("p");
+    p.innerHTML = `<strong>${data.username}</strong>: ${data.text}`;
 
-    room.append(chatContent);
+    room.append(p);
     room.scrollTop = room.scrollHeight; // Auto scroll to the bottom
   });
 

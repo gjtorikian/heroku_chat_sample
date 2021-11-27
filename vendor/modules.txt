@@ -13,3 +13,7 @@ github.com/gorilla/websocket
 # github.com/joho/godotenv v1.3.0
 ## explicit
 github.com/joho/godotenv
+# github.com/onsi/ginkgo v1.16.5
+## explicit
+# github.com/onsi/gomega v1.17.0
+## explicit
